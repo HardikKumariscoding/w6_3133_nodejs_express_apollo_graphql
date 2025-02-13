@@ -1,9 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+
+const resolvers = require('./resolvers.js');
+const typeDefs = require('./schema.js');
 //import ApolloServer
 
-
+const { ApolloServer } = require('apollo-server-express'); 
 //Store sensitive information to env variables
 const dotenv = require('dotenv');
 dotenv.config();
@@ -29,14 +32,17 @@ const connectDB = async() => {
 
 //Define Apollo Server
 
-
+const server = new ApolloServer({
+  typeDefs,  // Schema
+  resolvers  // Resolvers
+});
 //Define Express Server
 const app = express();
 app.use(express.json());
 app.use('*', cors());
 
 //Add Express app as middleware to Apollo Server
-
+server.applyMiddleware({ app });
 
 //Start listen 
 app.listen({ port: process.env.PORT }, () => {  
